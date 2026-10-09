@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VeriText AI | Fact Verification System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div
+                    class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid fa-shield-halved text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1
+                        class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+                        VeriText AI</h1>
+                    <p class="text-xs text-slate-400">GK, Science, History & News Fact Verification</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <span
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Fact Checking Pipeline Ready
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto w-full px-6 py-10 flex-grow space-y-8">
+
+        <!-- Hero Title -->
+        <div class="text-center max-w-2xl mx-auto space-y-3">
+            <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Verify Any Factual or GK Claim</h2>
+            <p class="text-slate-400 text-sm md:text-base">Cross-verifies claims across science, geography, history,
+                space, technology, famous figures, sports, and current affairs against authoritative knowledge sources.
+            </p>
+        </div>
+
+        <!-- Preset Sample Buttons -->
+        <div class="flex flex-wrap items-center justify-center gap-2 pt-2">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mr-2">Quick Test:</span>
+            <button onclick="loadSample('gk_gold_true')"
+                class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-emerald-800/50 text-xs text-emerald-300 transition flex items-center gap-2">
+                <i class="fa-solid fa-check text-emerald-500"></i> "Gold is Au" (TRUE)
+            </button>
+            <button onclick="loadSample('gk_delhi_true')"
+                class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-emerald-800/50 text-xs text-emerald-300 transition flex items-center gap-2">
+                <i class="fa-solid fa-check text-emerald-500"></i> "New Delhi = Capital of India" (TRUE)
+            </button>
+            <button onclick="loadSample('gk_jupiter_true')"
+                class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-emerald-800/50 text-xs text-emerald-300 transition flex items-center gap-2">
+                <i class="fa-solid fa-check text-emerald-500"></i> "Jupiter is largest planet" (TRUE)
+            </button>
+            <button onclick="loadSample('gk_geography_false')"
+                class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-rose-800/50 text-xs text-rose-300 transition flex items-center gap-2">
+                <i class="fa-solid fa-ban text-rose-500"></i> "Sydney = Capital of Australia" (FAKE)
+            </button>
+            <button onclick="loadSample('gk_leader_false')"
+                class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-rose-800/50 text-xs text-rose-300 transition flex items-center gap-2">
+                <i class="fa-solid fa-ban text-rose-500"></i> "Trump = President of India" (FAKE)
+            </button>
+            <button onclick="loadSample('gk_gold_false')"
+                class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-rose-800/50 text-xs text-rose-300 transition flex items-center gap-2">
+                <i class="fa-solid fa-ban text-rose-500"></i> "Gold is Ag" (FAKE)
+            </button>
+        </div>
+
+        <!-- Input Box Section -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+                <label for="newsInput" class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                    <i class="fa-solid fa-file-lines text-indigo-400"></i> Enter Claim / Headline / General Fact
+                </label>
+                <button onclick="clearText()" class="text-xs text-slate-500 hover:text-slate-300 transition">
+                    <i class="fa-solid fa-rotate-left"></i> Clear
+                </button>
+            </div>
+
+            <textarea id="newsInput" rows="5"
+                class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-200 text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition placeholder:text-slate-600 resize-y"
+                placeholder="Enter any general knowledge claim, historical fact, geography question, science statement, or news headline..."></textarea>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+                <div
+                    class="flex items-center gap-4 text-xs text-slate-400 w-full sm:w-auto justify-between sm:justify-start">
+                    <span id="charCount"><i class="fa-regular fa-keyboard mr-1"></i> 0 Chars</span>
+                    <span id="wordCount"><i class="fa-solid fa-font mr-1"></i> 0 Words</span>
+                </div>
+
+                <button onclick="analyzeNews()" id="submitBtn"
+                    class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold text-sm transition shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2 disabled:opacity-50">
+                    <i class="fa-solid fa-bolt" id="btnIcon"></i>
+                    <span id="btnText">Verify Fact & Claim</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Dashboard (Hidden Initially) -->
+        <div id="resultContainer" class="hidden space-y-6">
+
+            <!-- Main Result Header -->
+            <div id="resultBanner"
+                class="p-6 rounded-2xl border transition-all duration-300 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="flex items-start gap-4">
+                    <div id="resultBadgeIcon"
+                        class="h-14 w-14 rounded-2xl flex items-center justify-center text-2xl shrink-0"></div>
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <h3 id="resultTitle" class="text-2xl font-bold tracking-tight"></h3>
+                            <span id="riskTag"
+                                class="px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider"></span>
+                        </div>
+                        <p id="resultDesc" class="text-slate-300 text-sm mt-1"></p>
+                    </div>
+                </div>
+
+                <!-- Confidence Circle / Gauge -->
+                <div
+                    class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 shrink-0 w-full md:w-auto flex items-center justify-between md:justify-start gap-4">
+                    <div class="text-right">
+                        <p class="text-xs font-semibold text-slate-400 uppercase">Confidence Level</p>
+                        <p id="confidenceText" class="text-2xl font-black text-white">0%</p>
+                    </div>
+                    <div class="w-16 bg-slate-800 rounded-full h-2 overflow-hidden w-28">
+                        <div id="confidenceBar" class="h-full transition-all duration-1000 rounded-full"
+                            style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fact Check & Verification Reason Card -->
+            <div id="factCheckCard" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                    <h4 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-magnifying-glass-chart text-indigo-400"></i> Factual Reason & Citation
+                    </h4>
+                    <span id="verificationStatusBadge" class="text-xs px-2.5 py-0.5 rounded-full font-medium"></span>
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase font-semibold">Verification Explanation:</p>
+                        <p id="factExplanation" class="text-sm text-slate-200 leading-relaxed mt-0.5 font-medium"></p>
+                    </div>
+                    <div id="factSourceBox"
+                        class="text-xs text-slate-400 flex items-center gap-2 pt-1 border-t border-slate-800/50">
+                        <i class="fa-solid fa-link text-indigo-400"></i>
+                        <span id="factSourceText">Source: Reliable Reference Base</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diagnostic Metrics Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                <!-- Card 1: Linguistic vs Factual Status -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-2">
+                    <div class="flex items-center justify-between text-slate-400">
+                        <span class="text-xs font-semibold uppercase">TF-IDF ML Model</span>
+                        <i class="fa-solid fa-brain text-indigo-400"></i>
+                    </div>
+                    <p id="metricML" class="text-lg font-bold text-slate-100">-</p>
+                    <p class="text-xs text-slate-500">Stylistic pattern classification</p>
+                </div>
+
+                <!-- Card 2: Extracted Keywords -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-2">
+                    <div class="flex items-center justify-between text-slate-400">
+                        <span class="text-xs font-semibold uppercase">Key Terms Flagged</span>
+                        <i class="fa-solid fa-tags text-violet-400"></i>
+                    </div>
+                    <div id="keywordsList" class="flex flex-wrap gap-1.5 pt-1">
+                        <!-- Dynamic keywords inserted here -->
+                    </div>
+                </div>
+
+                <!-- Card 3: Model Architecture -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-2">
+                    <div class="flex items-center justify-between text-slate-400">
+                        <span class="text-xs font-semibold uppercase">Engine Architecture</span>
+                        <i class="fa-solid fa-microchip text-emerald-400"></i>
+                    </div>
+                    <p class="text-sm font-semibold text-slate-200">ML + Fact Verification</p>
+                    <p class="text-xs text-slate-500">Open Knowledge Base & Wikipedia</p>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/60 bg-slate-950 py-6 px-6 text-center text-xs text-slate-500">
+        <p>VeriText AI Universal Fact Checking Engine &bull; Built with Flask & Scikit-Learn</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        const textarea = document.getElementById('newsInput');
+        const charCount = document.getElementById('charCount');
+        const wordCount = document.getElementById('wordCount');
+
+        // Sample text payloads
+        const samples = {
+            gk_gold_true: "The chemical symbol for gold is Au.",
+            gk_delhi_true: "New Delhi is the capital of India.",
+            gk_jupiter_true: "Jupiter is the largest planet in our solar system.",
+            gk_geography_false: "Sydney is the capital of Australia.",
+            gk_leader_false: "Trump is the president of India.",
+            gk_gold_false: "The chemical symbol for gold is Ag."
+        };
+
+        textarea.addEventListener('input', () => {
+            const text = textarea.value;
+            charCount.innerHTML = `<i class="fa-regular fa-keyboard mr-1"></i> ${text.length} Chars`;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            wordCount.innerHTML = `<i class="fa-solid fa-font mr-1"></i> ${words} Words`;
+        });
+
+        function loadSample(type) {
+            textarea.value = samples[type];
+            textarea.dispatchEvent(new Event('input'));
+        }
+
+        function clearText() {
+            textarea.value = '';
+            textarea.dispatchEvent(new Event('input'));
+            document.getElementById('resultContainer').classList.add('hidden');
+        }
+
+        async function analyzeNews() {
+            const text = textarea.value.trim();
+            const resultContainer = document.getElementById('resultContainer');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnIcon = document.getElementById('btnIcon');
+
+            if (!text) {
+                alert('Please enter a claim or statement first.');
+                return;
+            }
+
+            // UI Loading state
+            submitBtn.disabled = true;
+            btnText.textContent = 'Verifying with Reference Knowledge...';
+            btnIcon.className = "fa-solid fa-circle-notch animate-spin";
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultContainer.classList.remove('hidden');
+
+                    const resultBanner = document.getElementById('resultBanner');
+                    const badgeIcon = document.getElementById('resultBadgeIcon');
+                    const title = document.getElementById('resultTitle');
+                    const desc = document.getElementById('resultDesc');
+                    const riskTag = document.getElementById('riskTag');
+                    const confidenceText = document.getElementById('confidenceText');
+                    const confidenceBar = document.getElementById('confidenceBar');
+                    const keywordsList = document.getElementById('keywordsList');
+                    const metricML = document.getElementById('metricML');
+                    const factExplanation = document.getElementById('factExplanation');
+                    const factSourceBox = document.getElementById('factSourceBox');
+                    const factSourceText = document.getElementById('factSourceText');
+                    const verificationStatusBadge = document.getElementById('verificationStatusBadge');
+
+                    // Set Confidence Meter
+                    confidenceText.textContent = `${data.confidence_score}%`;
+                    confidenceBar.style.width = `${data.confidence_score}%`;
+
+                    // Set ML metric
+                    metricML.textContent = data.ml_prediction ? `ML Verdict: ${data.ml_prediction}` : 'ML Analysis';
+
+                    // Set Fact Check details
+                    const factInfo = data.fact_check || {};
+                    factExplanation.textContent = factInfo.explanation || "No specific claim explanation provided.";
+
+                    if (factInfo.source_name) {
+                        factSourceBox.classList.remove('hidden');
+                        if (factInfo.source_url) {
+                            factSourceText.innerHTML = `Source: <a href="${factInfo.source_url}" target="_blank" class="text-indigo-400 hover:underline inline-flex items-center gap-1 font-semibold">${factInfo.source_name} <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i></a>`;
+                        } else {
+                            factSourceText.textContent = `Source: ${factInfo.source_name}`;
+                        }
+                    } else {
+                        factSourceBox.classList.add('hidden');
+                    }
+
+                    // Render extracted keywords
+                    keywordsList.innerHTML = data.keywords && data.keywords.length
+                        ? data.keywords.map(kw => `<span class="px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 text-xs">${kw}</span>`).join('')
+                        : '<span class="text-xs text-slate-500">None extracted</span>';
+
+                    // Definitive Two-Class Verdict: TRUE vs FAKE
+                    const isTrue = (data.prediction === 'TRUE' || data.prediction === 'REAL');
+
+                    if (isTrue) {
+                        resultBanner.className = "p-6 rounded-2xl border transition-all duration-300 bg-emerald-950/30 border-emerald-500/30 text-emerald-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-6";
+                        badgeIcon.className = "h-14 w-14 rounded-2xl flex items-center justify-center text-2xl shrink-0 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+                        badgeIcon.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
+                        title.textContent = "TRUE";
+                        riskTag.className = "px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                        riskTag.textContent = "Verified Fact";
+                        desc.textContent = "This statement is verified and aligns with authoritative reference records.";
+                        confidenceBar.className = "h-full transition-all duration-1000 rounded-full bg-emerald-500";
+
+                        verificationStatusBadge.className = "text-xs px-2.5 py-0.5 rounded-full font-medium bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                        verificationStatusBadge.textContent = "Verified True";
+
+                    } else {
+                        resultBanner.className = "p-6 rounded-2xl border transition-all duration-300 bg-rose-950/30 border-rose-500/30 text-rose-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-6";
+                        badgeIcon.className = "h-14 w-14 rounded-2xl flex items-center justify-center text-2xl shrink-0 bg-rose-500/20 text-rose-400 border border-rose-500/30";
+                        badgeIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i>`;
+                        title.textContent = "FAKE";
+                        riskTag.className = "px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/30";
+                        riskTag.textContent = "Factually Inaccurate";
+                        desc.textContent = factInfo.explanation || "Factual contradiction or unsubstantiated statement detected.";
+                        confidenceBar.className = "h-full transition-all duration-1000 rounded-full bg-rose-500";
+
+                        verificationStatusBadge.className = "text-xs px-2.5 py-0.5 rounded-full font-medium bg-rose-500/20 text-rose-300 border border-rose-500/30";
+                        verificationStatusBadge.textContent = "Refuted / Fake Claim";
+                    }
+
+                    // Smooth scroll to result
+                    resultContainer.scrollIntoView({ behavior: 'smooth' });
+
+                } else {
+                    alert(data.error || 'Analysis failed.');
+                }
+            } catch (err) {
+                alert('Connection to backend engine failed.');
+            } finally {
+                submitBtn.disabled = false;
+                btnText.textContent = 'Verify Fact & Claim';
+                btnIcon.className = "fa-solid fa-bolt";
+            }
+        }
+    </script>
+</body>
+
+</html>
